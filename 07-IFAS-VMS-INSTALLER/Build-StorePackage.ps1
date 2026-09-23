@@ -6,6 +6,7 @@ if($LASTEXITCODE -ne 0){throw 'Publish failed'}
 $root=Resolve-Path (Join-Path $here '..')
 $stage=Join-Path $here 'StorePackage';Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue;New-Item -ItemType Directory -Force -Path $stage|Out-Null
 Copy-Item (Join-Path $here 'Published') (Join-Path $stage 'Published') -Recurse -Force
+Remove-Item (Join-Path $stage 'Published\LicenseCreator') -Recurse -Force -ErrorAction SilentlyContinue
 Copy-Item (Join-Path $here 'Install.ps1') $stage -Force
 Copy-Item (Join-Path $here 'Preflight.ps1') $stage -Force
 Copy-Item (Join-Path $here 'InstallerConfig.json') $stage -Force
