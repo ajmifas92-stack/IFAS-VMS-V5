@@ -1,0 +1,12 @@
+**/bin/
+**/obj/
+**/publish/
+**/Data/*.db
+**/Data/*.db-shm
+**/Data/*.db-wal
+**/Keys/*.pem
+**/Keys/*.key
+**/Output/Licenses/*.ifaslic
+*.user
+*.suo
+.vs/

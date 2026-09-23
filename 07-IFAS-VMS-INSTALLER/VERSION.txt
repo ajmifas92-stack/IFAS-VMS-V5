@@ -1,0 +1,4 @@
+IFAS VMS Installer
+Version: 1.0.0
+Platform: Windows x64
+Created: 2026-09-22

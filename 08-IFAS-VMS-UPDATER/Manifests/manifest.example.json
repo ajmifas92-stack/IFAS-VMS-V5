@@ -1,0 +1,14 @@
+{
+  "product": "IFAS VMS",
+  "version": "1.1.0",
+  "releaseDateUtc": "2026-10-01T00:00:00Z",
+  "packageUrl": "https://updates.example.invalid/ifas-vms/1.1.0/IFAS-VMS-1.1.0.zip",
+  "packageSha256": "REPLACE_WITH_REAL_SHA256",
+  "packageSignature": "REPLACE_WITH_REAL_SIGNATURE",
+  "minimumSupportedVersion": "1.0.0",
+  "mandatory": false,
+  "releaseNotes": [
+    "Bug fixes",
+    "Performance improvements"
+  ]
+}

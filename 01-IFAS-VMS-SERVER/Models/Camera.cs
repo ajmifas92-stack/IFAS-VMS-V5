@@ -1,0 +1,2 @@
+namespace IFAS.Server.Models;
+public sealed class Camera { public int Id { get; set; } public string Name { get; set; } = string.Empty; public string IpAddress { get; set; } = string.Empty; public string Protocol { get; set; } = "RTSP"; public string StreamUrl { get; set; } = string.Empty; public string Username { get; set; } = string.Empty; public string Password { get; set; } = string.Empty; public bool Enabled { get; set; } = true; public DateTime CreatedUtc { get; set; } = DateTime.UtcNow; }

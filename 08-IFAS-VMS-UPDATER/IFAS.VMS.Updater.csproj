@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>IFAS.VMS.Updater</RootNamespace>
+    <AssemblyName>IFAS.VMS.Updater</AssemblyName>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\05-IFAS-VMS-SHARED\IFAS.VMS.Shared.csproj" />
+    <ProjectReference Include="..\06-IFAS-VMS-SECURITY\IFAS.VMS.Security.csproj" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,17 @@
+{
+  "ProductName": "IFAS VMS",
+  "ProductVersion": "5.0.0",
+  "Publisher": "IFAS",
+  "Architecture": "x64",
+  "InstallDirectory": "%ProgramFiles%\\IFAS\\IFAS VMS",
+  "DataDirectory": "%ProgramData%\\IFAS\\IFAS VMS",
+  "ServerPort": 5080,
+  "ClientExecutable": "IFAS.VMS.Client.exe",
+  "ServerExecutable": "IFAS.Server.exe",
+  "UpdaterExecutable": "IFAS.VMS.Updater.exe",
+  "RegisterWindowsService": true,
+  "ServiceName": "IFAS VMS Server",
+  "ServiceDisplayName": "IFAS VMS Server",
+  "CreateDesktopShortcut": true,
+  "CreateStartMenuShortcut": true
+}

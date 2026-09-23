@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>IFAS.LicenseCreator.Desktop</RootNamespace>
+    <AssemblyName>IFAS.LicenseCreator</AssemblyName>
+      <ApplicationIcon>Assets\IFAS-License-Manager.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\IFAS.LicenseManager.csproj" />
+  </ItemGroup>
+</Project>

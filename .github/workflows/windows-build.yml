@@ -1,0 +1,25 @@
+name: IFAS VMS Windows Build
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main, master ]
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+      - name: Restore
+        run: dotnet restore IFAS-VMS.sln
+      - name: Build solution
+        run: dotnet build IFAS-VMS.sln -c Release --no-restore
+      - name: Publish and package
+        shell: pwsh
+        run: .\07-IFAS-VMS-INSTALLER\Build-StorePackage.ps1
+      - name: Upload store package
+        uses: actions/upload-artifact@v4
+        with:
+          name: IFAS-VMS-STORE-PACKAGE
+          path: 07-IFAS-VMS-INSTALLER/IFAS-VMS-STORE-PACKAGE.zip

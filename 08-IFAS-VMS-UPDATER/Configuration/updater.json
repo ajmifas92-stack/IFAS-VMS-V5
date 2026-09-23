@@ -1,0 +1,10 @@
+{
+  "Product": "IFAS VMS",
+  "CurrentVersion": "1.0.0",
+  "UpdateChannel": "stable",
+  "ManifestUrl": "https://updates.example.invalid/ifas-vms/stable/manifest.json",
+  "InstallRoot": "%ProgramFiles%\\IFAS\\IFAS VMS",
+  "DataRoot": "%ProgramData%\\IFAS\\IFAS VMS",
+  "RequirePackageSignature": true,
+  "RequireHttps": true
+}

@@ -1,0 +1,2 @@
+namespace IFAS.Server.Models;
+public sealed class License { public int Id { get; set; } public string LicenseId { get; set; } = string.Empty; public string CustomerName { get; set; } = string.Empty; public int MaxUsers { get; set; } public int MaxCameras { get; set; } public DateTime ExpiresUtc { get; set; } public bool Revoked { get; set; } public string SignedLicenseJson { get; set; } = string.Empty; public DateTime InstalledUtc { get; set; } = DateTime.UtcNow; }

@@ -1,0 +1,14 @@
+{
+  "Server": {
+    "Host": "0.0.0.0",
+    "HttpsPort": 8443
+  },
+  "Security": {
+    "JwtSecret": "SET-THIS-OUTSIDE-THE-INSTALLER",
+    "EnableHttps": true
+  },
+  "Database": {
+    "Provider": "SQLite",
+    "ConnectionString": "Data Source=ifas-vms.db"
+  }
+}
