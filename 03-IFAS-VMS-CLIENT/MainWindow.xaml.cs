@@ -57,7 +57,7 @@ public partial class MainWindow : Window
 
     private async void SaveCamera_Click(object sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrWhiteSpace(NameBox.Text) || string.IsNullOrWhiteSpace(RtspBox.Text)) { MessageBox.Show("Camera name and RTSP URL are required."); return; }
+        if (string.IsNullOrWhiteSpace(NameBox.Text) || string.IsNullOrWhiteSpace(RtspBox.Text)) { System.Windows.MessageBox.Show("Camera name and RTSP URL are required."); return; }
         var c = Selected ?? new CameraProfile();
         c.Name = NameBox.Text.Trim(); c.RtspUrl = RtspBox.Text.Trim(); c.RecordingPath = string.IsNullOrWhiteSpace(PathBox.Text) ? Path.Combine(_config.DefaultRecordingRoot, c.Name) : PathBox.Text.Trim();
         Directory.CreateDirectory(c.RecordingPath);
@@ -74,7 +74,7 @@ public partial class MainWindow : Window
     private async void Connect_Click(object sender, RoutedEventArgs e)
     {
         var c = Selected;
-        if (c is null) { MessageBox.Show("Select a camera first."); return; }
+        if (c is null) { System.Windows.MessageBox.Show("Select a camera first."); return; }
         try
         {
             _player!.Stop();
@@ -125,7 +125,7 @@ public partial class MainWindow : Window
         var devices = await _discovery.DiscoverAsync(TimeSpan.FromSeconds(4));
         if (devices.Count == 0) { StatusText.Text = "No ONVIF devices found."; return; }
         var text = string.Join(Environment.NewLine, devices.Select(x => x.Address));
-        MessageBox.Show(text, "ONVIF devices");
+        System.Windows.MessageBox.Show(text, "ONVIF devices");
         StatusText.Text = $"Found {devices.Count} ONVIF device(s).";
     }
 
