@@ -7,7 +7,6 @@
     <RootNamespace>IFAS.LicenseManager</RootNamespace>
     <AssemblyName>IFAS.LicenseManager</AssemblyName>
   </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.20" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.20">
@@ -16,6 +15,12 @@
     </PackageReference>
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Compile Remove="IFAS.LicenseCreator.Desktop/**/*.cs" />
+    <None Remove="IFAS.LicenseCreator.Desktop/**/*" />
+    <Page Remove="IFAS.LicenseCreator.Desktop/**/*.xaml" />
+  </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\05-IFAS-VMS-SHARED\IFAS.VMS.Shared.csproj" />

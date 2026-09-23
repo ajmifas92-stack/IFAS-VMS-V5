@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using IFAS.Server.Data; using IFAS.Server.DTOs; using IFAS.Server.Models; using IFAS.Server.Security; using System.Text.Json;
 namespace IFAS.Server.Services;
 public sealed class LicenseService(IFASDbContext db,LicenseValidator validator)
