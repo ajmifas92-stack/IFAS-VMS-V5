@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.IO;
+using System.Windows.Media;
+using System.Windows.Controls.Primitives;
 using System.Windows;
 using System.Windows.Controls;
 using Forms = System.Windows.Forms;
@@ -39,6 +41,7 @@ public partial class MainWindow : Window
         if (string.IsNullOrWhiteSpace(_config.DefaultRecordingRoot))
             _config.DefaultRecordingRoot = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData), "IFAS-VMS", "Recordings");
         Directory.CreateDirectory(_config.DefaultRecordingRoot);
+        await CheckRecordingExpiryWarningsAsync();
         RebindList();
         StatusText.Text = $"Config: {_store.FilePath}";
     }
@@ -153,4 +156,151 @@ public partial class MainWindow : Window
         if (_recorder != null) await _recorder.StopAsync();
         _player?.Stop(); _player?.Dispose(); _libVlc?.Dispose();
     }
-}
+    private async Task CheckRecordingExpiryWarningsAsync()
+    {
+        try
+        {
+            var retention = new RecordingRetentionService();
+            var days = retention.GetEffectiveRetentionDays(
+                _config.UseCustomRetentionDays,
+                _config.RecordingRetentionDays,
+                _config.CustomRetentionDays);
+
+            var warningDays = retention.GetWarningDays(
+                _config.RetentionWarning7Days,
+                _config.RetentionWarning3Days,
+                _config.RetentionWarning1Day,
+                _config.RetentionWarningCustom,
+                _config.CustomRetentionWarningDays);
+
+            var warningService = new RecordingExpiryWarningService();
+            var warnings = warningService.FindWarnings(
+                _config.DefaultRecordingRoot,
+                days,
+                warningDays);
+
+            if (warnings.Count == 0)
+                return;
+
+            var nearest = warnings
+                .OrderBy(x => x.ExpiryDateUtc)
+                .First();
+
+            StatusText.Text =
+                $"Recording expiry warning: {warnings.Count} file(s), nearest expiry in {nearest.RemainingDays} day(s).";
+
+            System.Windows.MessageBox.Show(
+                $"Recording retention warning.\n\n{warnings.Count} recording file(s) are approaching expiry.\nNearest expiry: {nearest.ExpiryDateUtc.ToLocalTime():yyyy-MM-dd HH:mm}",
+                "IFAS VMS - Recording Retention",
+                System.Windows.MessageBoxButton.OK,
+                System.Windows.MessageBoxImage.Warning);
+        }
+        catch (Exception ex)
+        {
+            StatusText.Text = "Retention warning error: " + ex.Message;
+        }
+    }
+
+    private void Playback_Click(object sender, RoutedEventArgs e)
+    {
+        PlaybackPanel.Visibility = Visibility.Visible;
+        _playbackMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        PlaybackCalendar.DisplayDate = _playbackMonth;
+        StatusText.Text = "Playback calendar loaded.";
+    }
+
+    private readonly RecordingPlaybackService _playbackService = new();
+    private DateTime _playbackMonth = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+
+    private void ClosePlayback_Click(object sender, RoutedEventArgs e)
+    {
+        PlaybackPanel.Visibility = Visibility.Collapsed;
+    }
+
+    private void PlaybackPreviousMonth_Click(object sender, RoutedEventArgs e)
+    {
+        _playbackMonth = _playbackMonth.AddMonths(-1);
+        PlaybackCalendar.DisplayDate = _playbackMonth;
+    }
+
+    private void PlaybackNextMonth_Click(object sender, RoutedEventArgs e)
+    {
+        _playbackMonth = _playbackMonth.AddMonths(1);
+        PlaybackCalendar.DisplayDate = _playbackMonth;
+    }
+
+    private void PlaybackCalendar_DisplayDateChanged(object sender, CalendarDateRangeChangedEventArgs e)
+    {
+        _playbackMonth = new DateTime(PlaybackCalendar.DisplayDate.Year, PlaybackCalendar.DisplayDate.Month, 1);
+        LoadPlaybackMonth();
+    }
+
+    private void PlaybackCalendar_Loaded(object sender, RoutedEventArgs e)
+    {
+        LoadPlaybackMonth();
+    }
+
+    private void PlaybackCalendar_SelectedDatesChanged(object sender, SelectionChangedEventArgs e)
+    {
+        if (PlaybackCalendar.SelectedDate is not DateTime date)
+            return;
+
+        var segments = _playbackService.GetSegments(_config.DefaultRecordingRoot, date);
+        PlaybackTimeline.ItemsSource = segments;
+        StatusText.Text = segments.Count == 0
+            ? $"No recordings for {date:yyyy-MM-dd}."
+            : $"{segments.Count} recording segment(s) for {date:yyyy-MM-dd}.";
+    }
+
+    private void LoadPlaybackMonth()
+    {
+        if (PlaybackMonthText == null || PlaybackCalendar == null)
+            return;
+
+        PlaybackMonthText.Text = _playbackMonth.ToString("MMMM yyyy");
+
+        _playbackRecordingDates.Clear();
+
+        var days = _playbackService.GetRecordingDays(
+            _config.DefaultRecordingRoot,
+            _playbackMonth);
+
+        foreach (var day in days)
+            _playbackRecordingDates.Add(day.Date.Date);
+
+        RefreshPlaybackCalendarVisuals();
+    }
+
+    private void RefreshPlaybackCalendarVisuals()
+    {
+        if (PlaybackCalendar == null)
+            return;
+
+        UpdateLayout();
+        PlaybackCalendar.UpdateLayout();
+
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(PlaybackCalendar); i++)
+        {
+            if (VisualTreeHelper.GetChild(PlaybackCalendar, i) is DependencyObject child)
+                ApplyPlaybackDayColors(child);
+        }
+    }
+
+    private void ApplyPlaybackDayColors(DependencyObject parent)
+    {
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+        {
+            var child = VisualTreeHelper.GetChild(parent, i);
+
+            if (child is CalendarDayButton dayButton && dayButton.DataContext is DateTime date)
+            {
+                if (dayButton.IsSelected)
+                    dayButton.Background = new SolidColorBrush(Color.FromRgb(36, 119, 200));
+                else if (_playbackRecordingDates.Contains(date.Date))
+                    dayButton.Background = new SolidColorBrush(Color.FromRgb(30, 142, 74));
+            }
+
+            ApplyPlaybackDayColors(child);
+        }
+    }
+}$
