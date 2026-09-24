@@ -138,6 +138,16 @@ public partial class MainWindow : Window
         var path = Selected?.RecordingPath ?? _config.DefaultRecordingRoot; Directory.CreateDirectory(path); Process.Start(new ProcessStartInfo("explorer.exe", $"\"{path}\"") { UseShellExecute = true });
     }
 
+    private void License_Click(object sender, RoutedEventArgs e)
+    {
+        var licenseWindow = new LicenseWindow
+        {
+            Owner = this
+        };
+
+        licenseWindow.ShowDialog();
+    }
+
     private async Task ShutdownAsync()
     {
         if (_recorder != null) await _recorder.StopAsync();

@@ -1,8 +1,115 @@
+using System.Text.Json;
+using IFAS.Server.Data;
+using IFAS.Server.DTOs;
+using IFAS.Server.Models;
+using IFAS.Server.Security;
 using Microsoft.EntityFrameworkCore;
-using IFAS.Server.Data; using IFAS.Server.DTOs; using IFAS.Server.Models; using IFAS.Server.Security; using System.Text.Json;
+
 namespace IFAS.Server.Services;
-public sealed class LicenseService(IFASDbContext db,LicenseValidator validator)
+
+public sealed class LicenseService(
+    IFASDbContext db,
+    LicenseValidator validator)
 {
- public async Task<LicenseStatusDto> InstallAsync(InstallLicenseRequest req){ if(!validator.VerifySignature(req.SignedLicenseJson)) return new(false,null,0,0,null,"Invalid license signature."); using var doc=JsonDocument.Parse(req.SignedLicenseJson); var p=doc.RootElement.GetProperty("payload"); var l=new License{LicenseId=p.GetProperty("licenseId").GetString()!,CustomerName=p.GetProperty("customerName").GetString()!,MaxUsers=p.GetProperty("maxUsers").GetInt32(),MaxCameras=p.GetProperty("maxCameras").GetInt32(),ExpiresUtc=p.GetProperty("expiresUtc").GetDateTime(),SignedLicenseJson=req.SignedLicenseJson}; var old=await db.Licenses.FindAsync(l.LicenseId); if(old is null) db.Licenses.Add(l); else {old.CustomerName=l.CustomerName; old.MaxUsers=l.MaxUsers; old.MaxCameras=l.MaxCameras; old.ExpiresUtc=l.ExpiresUtc; old.SignedLicenseJson=l.SignedLicenseJson; old.Revoked=false;} await db.SaveChangesAsync(); return new(true,l.CustomerName,l.MaxUsers,l.MaxCameras,l.ExpiresUtc,"License installed."); }
- public async Task<LicenseStatusDto> GetStatusAsync(){var l=await db.Licenses.Where(x=>!x.Revoked).OrderByDescending(x=>x.Id).FirstOrDefaultAsync(); if(l is null) return new(false,null,0,0,null,"No license installed."); var users=await db.Users.CountAsync(x=>x.IsActive); var cams=await db.Cameras.CountAsync(x=>x.Enabled); var ok=validator.IsWithinLimits(l,users,cams); return new(ok,l.CustomerName,l.MaxUsers,l.MaxCameras,l.ExpiresUtc,ok?"License valid.":"License limits or expiry exceeded.");}
+    public async Task<LicenseStatusDto> InstallAsync(
+        InstallLicenseRequest req)
+    {
+        if (!validator.VerifySignature(req.SignedLicenseJson))
+        {
+            return new(
+                false,
+                null,
+                0,
+                0,
+                0,
+                0,
+                null,
+                "Invalid license signature.");
+        }
+
+        using var doc = JsonDocument.Parse(req.SignedLicenseJson);
+
+        var p = doc.RootElement.GetProperty("payload");
+
+        var l = new License
+        {
+            LicenseId = p.GetProperty("licenseId").GetString()!,
+            CustomerName = p.GetProperty("customerName").GetString()!,
+            MaxUsers = p.GetProperty("maxUsers").GetInt32(),
+            MaxCameras = p.GetProperty("maxCameras").GetInt32(),
+            ExpiresUtc = p.GetProperty("expiresUtc").GetDateTime(),
+            SignedLicenseJson = req.SignedLicenseJson
+        };
+
+        var old = await db.Licenses.FindAsync(l.LicenseId);
+
+        if (old is null)
+        {
+            db.Licenses.Add(l);
+        }
+        else
+        {
+            old.CustomerName = l.CustomerName;
+            old.MaxUsers = l.MaxUsers;
+            old.MaxCameras = l.MaxCameras;
+            old.ExpiresUtc = l.ExpiresUtc;
+            old.SignedLicenseJson = l.SignedLicenseJson;
+            old.Revoked = false;
+        }
+
+        await db.SaveChangesAsync();
+
+        return new(
+            true,
+            l.CustomerName,
+            l.MaxUsers,
+            l.MaxCameras,
+            0,
+            l.MaxCameras,
+            l.ExpiresUtc,
+            "License installed.");
+    }
+
+    public async Task<LicenseStatusDto> GetStatusAsync()
+    {
+        var l = await db.Licenses
+            .Where(x => !x.Revoked)
+            .OrderByDescending(x => x.Id)
+            .FirstOrDefaultAsync();
+
+        if (l is null)
+        {
+            return new(
+                false,
+                null,
+                0,
+                0,
+                0,
+                0,
+                null,
+                "No license installed.");
+        }
+
+        var users = await db.Users
+            .CountAsync(x => x.IsActive);
+
+        var cams = await db.Cameras
+            .CountAsync(x => x.Enabled);
+
+        var ok = validator.IsWithinLimits(l, users, cams);
+
+        var remaining = Math.Max(0, l.MaxCameras - cams);
+
+        return new(
+            ok,
+            l.CustomerName,
+            l.MaxUsers,
+            l.MaxCameras,
+            cams,
+            remaining,
+            l.ExpiresUtc,
+            ok
+                ? "License valid."
+                : "License limits or expiry exceeded.");
+    }
 }
