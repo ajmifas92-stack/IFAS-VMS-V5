@@ -5,6 +5,8 @@ public sealed record LicenseStatusDto(
     string? Customer,
     int MaxUsers,
     int MaxCameras,
+    int UsedCameras,
+    int RemainingCameras,
     DateTime? ExpiresUtc,
     string? Message);
 

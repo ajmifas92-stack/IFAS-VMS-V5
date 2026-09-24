@@ -84,7 +84,7 @@ public partial class LicenseWindow : Window
                 return;
             }
 
-            var dialog = new OpenFileDialog
+            var dialog = new Microsoft.Win32.OpenFileDialog
             {
                 Title = "Select IFAS VMS License",
                 Filter = "IFAS License (*.ifaslic)|*.ifaslic|All Files (*.*)|*.*",
@@ -139,14 +139,14 @@ public partial class LicenseWindow : Window
 
             MessageText.Text = result.Message ?? "";
 
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 this,
                 result.Message ?? "License installation completed.",
                 "IFAS VMS License",
-                MessageBoxButton.OK,
+                System.Windows.MessageBoxButton.OK,
                 result.Valid
-                    ? MessageBoxImage.Information
-                    : MessageBoxImage.Warning);
+                    ? System.Windows.MessageBoxImage.Information
+                    : System.Windows.MessageBoxImage.Warning);
         }
         catch (Exception ex)
         {
