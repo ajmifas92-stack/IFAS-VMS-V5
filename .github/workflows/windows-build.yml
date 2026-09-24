@@ -1,25 +1,51 @@
 name: IFAS VMS Windows Build
+
 on:
   workflow_dispatch:
   push:
     branches: [ main, master ]
+
 jobs:
   build-windows:
     runs-on: windows-latest
+
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-dotnet@v4
         with:
           dotnet-version: '8.0.x'
+
+      - name: Setup Inno Setup
+        run: choco install innosetup --no-progress -y
+
       - name: Restore
         run: dotnet restore IFAS-VMS.sln
+
       - name: Build solution
         run: dotnet build IFAS-VMS.sln -c Release --no-restore
-      - name: Publish and package
+
+      - name: Publish
         shell: pwsh
-        run: .\07-IFAS-VMS-INSTALLER\Build-StorePackage.ps1
-      - name: Upload store package
+        run: .\07-IFAS-VMS-INSTALLER\Build-Publish.ps1
+
+
+      - name: Build Customer Installer
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" ".\07-IFAS-VMS-INSTALLER\Setup\IFAS-VMS-Setup.iss"
+
+      - name: Build License Creator Installer
+        run: |
+          & "${env:ProgramFiles(x86)}\Inno Setup 6\ISCC.exe" ".\07-IFAS-VMS-INSTALLER\Setup\IFAS-License-Creator-Setup.iss"
+
+      - name: Upload Customer Installer
         uses: actions/upload-artifact@v4
         with:
-          name: IFAS-VMS-STORE-PACKAGE
-          path: 07-IFAS-VMS-INSTALLER/IFAS-VMS-STORE-PACKAGE.zip
+          name: IFAS-VMS-SETUP
+          path: 07-IFAS-VMS-INSTALLER/Release/IFAS-VMS-Setup.exe
+
+      - name: Upload License Creator Installer
+        uses: actions/upload-artifact@v4
+        with:
+          name: IFAS-LICENSE-CREATOR-SETUP
+          path: 07-IFAS-VMS-INSTALLER/Release/IFAS-License-Creator-Setup.exe
