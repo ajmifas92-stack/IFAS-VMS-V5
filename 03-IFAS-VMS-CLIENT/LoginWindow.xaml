@@ -1,0 +1,70 @@
+<Window x:Class="IFAS.VMS.Client.LoginWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="IFAS VMS - Login"
+        Width="460"
+        Height="430"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#061426"
+        Foreground="#EAF4FF">
+
+    <Border Margin="30"
+            Padding="28"
+            Background="#091E32"
+            BorderBrush="#1D527C"
+            BorderThickness="1"
+            CornerRadius="8">
+
+        <StackPanel>
+            <TextBlock Text="IFAS VMS"
+                       FontSize="30"
+                       FontWeight="Bold"
+                       HorizontalAlignment="Center"/>
+
+            <TextBlock Text="Secure Login"
+                       FontSize="16"
+                       Foreground="#79BFFF"
+                       HorizontalAlignment="Center"
+                       Margin="0,4,0,25"/>
+
+            <TextBlock Text="Server URL"
+                       Margin="0,0,0,5"/>
+
+            <TextBox x:Name="ServerUrlBox"
+                     Text="http://127.0.0.1:5080/"
+                     Height="36"
+                     Padding="8"
+                     Margin="0,0,0,15"/>
+
+            <TextBlock Text="Username"
+                       Margin="0,0,0,5"/>
+
+            <TextBox x:Name="UsernameBox"
+                     Height="36"
+                     Padding="8"
+                     Margin="0,0,0,15"/>
+
+            <TextBlock Text="Password"
+                       Margin="0,0,0,5"/>
+
+            <PasswordBox x:Name="PasswordBox"
+                         Height="36"
+                         Padding="8"
+                         Margin="0,0,0,20"/>
+
+            <Button x:Name="LoginButton"
+                    Content="LOGIN"
+                    Height="42"
+                    FontWeight="Bold"
+                    Click="Login_Click"/>
+
+            <TextBlock x:Name="StatusText"
+                       Text=""
+                       Foreground="#FFCC66"
+                       TextWrapping="Wrap"
+                       HorizontalAlignment="Center"
+                       Margin="0,15,0,0"/>
+        </StackPanel>
+    </Border>
+</Window>

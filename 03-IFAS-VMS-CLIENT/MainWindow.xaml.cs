@@ -11,6 +11,10 @@ namespace IFAS.VMS.Client;
 
 public partial class MainWindow : Window
 {
+    private App ClientApp => (App)System.Windows.Application.Current;
+
+    private ApiClient? Api => ClientApp.Api;
+
     private readonly ConfigStore _store = new();
     private readonly OnvifDiscoveryService _discovery = new();
     private AppConfig _config = new();
