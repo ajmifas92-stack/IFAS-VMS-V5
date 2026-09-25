@@ -84,18 +84,19 @@ public sealed class OnvifCameraSettingsService
             };
         }
 
+        var profileValue = profile.Value;
         var configuration = await SendSoapAsync(
             mediaUrl,
-            BuildGetVideoEncoderConfigurationRequest(profile.Token),
+            BuildGetVideoEncoderConfigurationRequest(profileValue.Token),
             camera.Username,
             camera.Password,
             cancellationToken);
 
-        var settings = ParseEncoderSettings(camera.Name, profile.Token, configuration);
+        var settings = ParseEncoderSettings(camera.Name, profileValue.Token, configuration);
 
         var optionsResponse = await SendSoapAsync(
             mediaUrl,
-            BuildGetVideoEncoderConfigurationOptionsRequest(profile.Token),
+            BuildGetVideoEncoderConfigurationOptionsRequest(profileValue.Token),
             camera.Username,
             camera.Password,
             cancellationToken);

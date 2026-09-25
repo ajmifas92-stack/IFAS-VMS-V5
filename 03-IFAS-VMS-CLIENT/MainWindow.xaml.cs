@@ -25,13 +25,14 @@ public partial class MainWindow : Window
     private LibVLC? _libVlc;
     private LibVlcMediaPlayer? _player;
     private FfmpegRecorder? _recorder;
+    private readonly HashSet<DateTime> _playbackRecordingDates = new();
 
     public MainWindow()
     {
         InitializeComponent();
         Core.Initialize();
         _libVlc = new LibVLC("--network-caching=800", "--rtsp-tcp");
-        _player = new MediaPlayer(_libVlc);
+        _player = new LibVlcMediaPlayer(_libVlc);
         VideoView.MediaPlayer = _player;
         Loaded += async (_, _) => await LoadAsync();
         Closed += async (_, _) => await ShutdownAsync();
@@ -313,9 +314,9 @@ public partial class MainWindow : Window
             if (child is CalendarDayButton dayButton && dayButton.DataContext is DateTime date)
             {
                 if (dayButton.IsSelected)
-                    dayButton.Background = new SolidColorBrush(Color.FromRgb(36, 119, 200));
+                    dayButton.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(36, 119, 200));
                 else if (_playbackRecordingDates.Contains(date.Date))
-                    dayButton.Background = new SolidColorBrush(Color.FromRgb(30, 142, 74));
+                    dayButton.Background = new SolidColorBrush(System.Windows.Media.Color.FromRgb(30, 142, 74));
             }
 
             ApplyPlaybackDayColors(child);

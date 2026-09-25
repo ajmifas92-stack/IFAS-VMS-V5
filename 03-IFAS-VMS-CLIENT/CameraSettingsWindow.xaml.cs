@@ -122,7 +122,7 @@ public partial class CameraSettingsWindow : Window
     {
         if (_current is null || !_current.IsSupported)
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Please check the current camera settings first.",
                 "IFAS VMS",
                 MessageBoxButton.OK,
@@ -135,7 +135,7 @@ public partial class CameraSettingsWindow : Window
 
         if (!int.TryParse(FpsBox.Text.Trim(), out var fps) || fps <= 0)
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Enter a valid FPS value.",
                 "IFAS VMS",
                 MessageBoxButton.OK,
@@ -145,7 +145,7 @@ public partial class CameraSettingsWindow : Window
 
         if (!int.TryParse(BitrateBox.Text.Trim(), out var bitrate) || bitrate <= 0)
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Enter a valid bitrate value.",
                 "IFAS VMS",
                 MessageBoxButton.OK,
@@ -157,7 +157,7 @@ public partial class CameraSettingsWindow : Window
 
         if (string.IsNullOrWhiteSpace(codec))
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Select a codec.",
                 "IFAS VMS",
                 MessageBoxButton.OK,
@@ -170,7 +170,7 @@ public partial class CameraSettingsWindow : Window
         if (!string.IsNullOrWhiteSpace(QualityBox.Text) &&
             !int.TryParse(QualityBox.Text.Trim(), out quality))
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Enter a valid quality value.",
                 "IFAS VMS",
                 MessageBoxButton.OK,
@@ -200,7 +200,7 @@ public partial class CameraSettingsWindow : Window
                 $"Bitrate: {verified.BitrateKbps} Kbps | " +
                 $"Codec: {verified.Codec}";
 
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Camera settings were changed and verified successfully.",
                 "IFAS VMS",
                 MessageBoxButton.OK,
@@ -210,7 +210,7 @@ public partial class CameraSettingsWindow : Window
         {
             StatusBox.Text = "Change failed: " + ex.Message;
 
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Camera settings could not be changed.\n\n" + ex.Message,
                 "IFAS VMS",
                 MessageBoxButton.OK,
@@ -229,10 +229,10 @@ public partial class CameraSettingsWindow : Window
 
         var text = ResolutionComboBox.Text.Trim();
 
-        var parts = text.Split(
+        var parts = text.Split(new[] {
             'x',
             'X',
-            '×',
+            '×' },
             StringSplitOptions.RemoveEmptyEntries);
 
         if (parts.Length != 2 ||
@@ -241,7 +241,7 @@ public partial class CameraSettingsWindow : Window
             width <= 0 ||
             height <= 0)
         {
-            MessageBox.Show(
+            System.Windows.MessageBox.Show(
                 "Enter a valid resolution, for example 1920x1080.",
                 "IFAS VMS",
                 MessageBoxButton.OK,
