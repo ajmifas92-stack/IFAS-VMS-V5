@@ -320,4 +320,4 @@ public partial class MainWindow : Window
             ApplyPlaybackDayColors(child);
         }
     }
-}$
+}

@@ -130,7 +130,7 @@ public sealed class OnvifCameraSettingsService
                     BuildSecurityHeader(username, password)),
                 new XElement(
                     Soap + "Body",
-                    body.Root?.Elements() ?? Enumerable.Empty<XElement>()))));
+                    body.Root?.Elements() ?? Enumerable.Empty<XElement>())));
 
         using var content = new StringContent(
             envelope.ToString(SaveOptions.DisableFormatting),
