@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Media;
+using LibVlcMediaPlayer = LibVLCSharp.Shared.MediaPlayer;
 using System.Windows.Controls.Primitives;
 using System.Windows;
 using System.Windows.Controls;
@@ -22,7 +23,7 @@ public partial class MainWindow : Window
     private readonly OnvifCameraSettingsService _cameraSettings = new();
     private AppConfig _config = new();
     private LibVLC? _libVlc;
-    private MediaPlayer? _player;
+    private LibVlcMediaPlayer? _player;
     private FfmpegRecorder? _recorder;
 
     public MainWindow()
@@ -246,7 +247,7 @@ public partial class MainWindow : Window
         PlaybackCalendar.DisplayDate = _playbackMonth;
     }
 
-    private void PlaybackCalendar_DisplayDateChanged(object sender, CalendarDateRangeChangedEventArgs e)
+    private void PlaybackCalendar_DisplayDateChanged(object sender, CalendarDateChangedEventArgs e)
     {
         _playbackMonth = new DateTime(PlaybackCalendar.DisplayDate.Year, PlaybackCalendar.DisplayDate.Month, 1);
         LoadPlaybackMonth();

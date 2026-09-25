@@ -1,6 +1,7 @@
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using System.Net.Http;
 using System.Xml.Linq;
 using IFAS.VMS.Client.Models;
 
