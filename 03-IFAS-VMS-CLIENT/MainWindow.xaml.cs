@@ -19,6 +19,7 @@ public partial class MainWindow : Window
 
     private readonly ConfigStore _store = new();
     private readonly OnvifDiscoveryService _discovery = new();
+    private readonly OnvifCameraSettingsService _cameraSettings = new();
     private AppConfig _config = new();
     private LibVLC? _libVlc;
     private MediaPlayer? _player;
@@ -134,6 +135,22 @@ public partial class MainWindow : Window
         var text = string.Join(Environment.NewLine, devices.Select(x => x.Address));
         System.Windows.MessageBox.Show(text, "ONVIF devices");
         StatusText.Text = $"Found {devices.Count} ONVIF device(s).";
+    }
+
+    private void CameraManagement_Click(object sender, RoutedEventArgs e)
+    {
+        if (Selected is null)
+        {
+            System.Windows.MessageBox.Show("Please select a camera first.", "IFAS VMS", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information);
+            return;
+        }
+
+        var window = new CameraSettingsWindow(Selected)
+        {
+            Owner = this
+        };
+
+        window.ShowDialog();
     }
 
     private void OpenDataFolder_Click(object sender, RoutedEventArgs e)

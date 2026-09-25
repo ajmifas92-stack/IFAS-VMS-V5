@@ -6,6 +6,7 @@ public sealed class CameraProfile
     public string Name { get; set; } = "Camera";
     public string Host { get; set; } = "";
     public int Port { get; set; } = 554;
+    public int OnvifPort { get; set; } = 80;
     public string Username { get; set; } = "";
     public string Password { get; set; } = "";
     public string RtspUrl { get; set; } = "";
@@ -13,3 +14,4 @@ public sealed class CameraProfile
     public bool RecordEnabled { get; set; }
     public string Protocol { get; set; } = "RTSP";
 }
+

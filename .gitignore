@@ -10,3 +10,7 @@
 *.user
 *.suo
 .vs/
+
+*.bak
+*.bak2
+*.pre-options
